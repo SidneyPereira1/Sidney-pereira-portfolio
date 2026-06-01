@@ -1,606 +1,985 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidney Pereira - Fine Art Photography</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sidney Pereira — Fine Art Photography</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nixie+One&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:      #0d2959;
+      --navy-deep: #032352;
+      --navy-mid:  #1e3a6a;
+      --blue-acc:  #4866a2;
+      --blue-light:#c0cbe9;
+      --lavender:  #e7dde6;
+      --offwhite:  #fff8fd;
+      --muted:     #c2bcc8;
+      --text:      #f0dfef;
+    }
 
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            color: #333;
-            line-height: 1.6;
-            background: #fafafa;
-        }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--navy-deep);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img, video { display: block; width: 100%; }
 
-        header {
-            background: white;
-            padding: 40px 0;
-            border-bottom: 1px solid #eee;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.6rem 3rem;
+      transition: background .4s, padding .3s;
+    }
+    nav.scrolled {
+      background: rgba(3,35,82,.95);
+      backdrop-filter: blur(12px);
+      padding: 1rem 3rem;
+      border-bottom: 1px solid rgba(72,102,162,.2);
+    }
+    .nav-logo {
+      font-family: 'Nixie One', monospace;
+      font-size: 1rem;
+      letter-spacing: .3em;
+      color: var(--offwhite);
+    }
+    .nav-links { display: flex; gap: 2.8rem; list-style: none; }
+    .nav-links a {
+      font-size: .68rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(240,223,239,.65);
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--offwhite); }
+    .nav-admin {
+      font-size: .65rem; letter-spacing: .18em; text-transform: uppercase;
+      border: 1px solid rgba(72,102,162,.6);
+      color: var(--blue-light); padding: .35rem 1rem;
+      cursor: pointer; background: none;
+      transition: background .2s, color .2s, border-color .2s;
+    }
+    .nav-admin:hover { background: var(--blue-acc); border-color: var(--blue-acc); color: var(--offwhite); }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 40px;
-        }
+    /* ── HERO — full-bleed like LIK ── */
+    #hero {
+      height: 100vh; min-height: 600px;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(160deg, var(--navy-deep) 0%, #1a3262 55%, #223566 100%);
+      background-size: cover; background-position: center;
+      transition: opacity .5s;
+    }
+    /* When a user photo is set via JS, the overlay dims it elegantly */
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom,
+        rgba(3,35,82,.45) 0%,
+        rgba(3,35,82,.25) 45%,
+        rgba(3,35,82,.6) 100%);
+      z-index: 1;
+    }
+    .hero-content { position: relative; z-index: 2; padding: 0 2rem; }
+    .hero-rule {
+      width: 40px; height: 1px;
+      background: var(--blue-acc);
+      margin: 0 auto 1.8rem;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: clamp(2.8rem, 6.5vw, 5.8rem);
+      letter-spacing: .06em;
+      color: var(--offwhite);
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .hero-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(.95rem, 1.8vw, 1.35rem);
+      color: var(--lavender);
+      margin-top: .8rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .hero-cta {
+      display: inline-block;
+      margin-top: 2.5rem;
+      font-size: .65rem; letter-spacing: .25em; text-transform: uppercase;
+      color: var(--offwhite);
+      border: 1px solid rgba(255,248,253,.4);
+      padding: .7rem 2rem;
+      transition: background .2s, border-color .2s;
+    }
+    .hero-cta:hover { background: rgba(255,248,253,.1); border-color: var(--offwhite); }
+    .hero-scroll {
+      position: absolute; bottom: 2.2rem; left: 50%;
+      transform: translateX(-50%); z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      color: rgba(194,188,200,.5); font-size: .6rem; letter-spacing: .22em; text-transform: uppercase;
+    }
+    .hero-scroll-line {
+      display: block; width: 1px; height: 36px;
+      background: linear-gradient(to bottom, var(--blue-acc), transparent);
+      animation: scrollpulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollpulse { 0%,100%{opacity:.4} 50%{opacity:1} }
 
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    /* ── FEATURED BANNER (LIK-style full-width editorial) ── */
+    .editorial-banner {
+      width: 100%; position: relative; overflow: hidden;
+      aspect-ratio: 21/9;
+      background: var(--navy-mid);
+      cursor: pointer;
+    }
+    .editorial-banner img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .8s ease;
+    }
+    .editorial-banner:hover img { transform: scale(1.03); }
+    .editorial-banner .banner-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(3,35,82,.75) 0%, transparent 60%);
+      display: flex; flex-direction: column;
+      justify-content: flex-end; padding: 4rem 5rem;
+    }
+    .banner-label {
+      font-size: .62rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--blue-light); margin-bottom: .8rem;
+    }
+    .banner-title {
+      font-family: 'Nixie One', monospace;
+      font-size: clamp(1.6rem, 3.5vw, 3rem);
+      color: var(--offwhite); letter-spacing: .08em;
+      line-height: 1.1; margin-bottom: 1rem;
+    }
+    .banner-link {
+      font-size: .65rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--lavender);
+      border-bottom: 1px solid rgba(231,221,230,.4);
+      padding-bottom: .2rem;
+      display: inline-block;
+      transition: color .2s, border-color .2s;
+    }
+    .banner-link:hover { color: var(--offwhite); border-color: var(--offwhite); }
+    .editorial-banner.empty-banner {
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(194,188,200,.3);
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem;
+      border: 1px dashed rgba(72,102,162,.2);
+    }
 
-        h1 {
-            font-size: 24px;
-            font-weight: 300;
-            letter-spacing: 2px;
-        }
+    /* ── SECTION WRAPPER ── */
+    .section-wrap { max-width: 1440px; margin: 0 auto; padding: 7rem 3rem; }
+    .section-header { margin-bottom: 3rem; }
+    .section-label {
+      font-size: .62rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--blue-acc); margin-bottom: .8rem;
+    }
+    .section-title {
+      font-family: 'Nixie One', monospace;
+      font-size: clamp(1.3rem, 2.8vw, 2rem);
+      color: var(--offwhite); letter-spacing: .1em; margin-bottom: .5rem;
+    }
+    .section-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; color: var(--muted);
+      font-size: 1.05rem; max-width: 500px;
+    }
+    .section-action {
+      font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--blue-light);
+      border-bottom: 1px solid rgba(72,102,162,.4);
+      padding-bottom: .2rem;
+      display: inline-block; margin-top: 1.2rem;
+      transition: color .2s;
+    }
+    .section-action:hover { color: var(--offwhite); }
 
-        nav {
-            display: flex;
-            gap: 40px;
-        }
+    /* ── GALLERY ── */
+    .category-nav {
+      display: flex; gap: 2rem; flex-wrap: wrap;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(72,102,162,.2);
+      padding-bottom: .8rem;
+    }
+    .cat-btn {
+      font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--muted); background: none; border: none;
+      cursor: pointer; padding-bottom: .6rem;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      transition: color .2s, border-color .2s;
+    }
+    .cat-btn.active, .cat-btn:hover { color: var(--offwhite); border-color: var(--blue-acc); }
 
-        nav a {
-            text-decoration: none;
-            color: #666;
-            font-size: 12px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            transition: color 0.3s;
-        }
+    /* LIK-style: no gap, mosaic */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+    .gallery-grid .gallery-item:first-child:nth-last-child(1) { grid-column: 1/-1; aspect-ratio: 21/9; }
+    .gallery-grid .gallery-item:first-child:nth-last-child(2),
+    .gallery-grid .gallery-item:first-child:nth-last-child(2) ~ .gallery-item { grid-column: span 1; }
 
-        nav a:hover {
-            color: #000;
-        }
+    .gallery-item {
+      position: relative; overflow: hidden; cursor: pointer;
+      aspect-ratio: 4/3;
+      background: var(--navy-mid);
+      border: 1px solid rgba(3,35,82,.8);
+    }
+    .gallery-item img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .6s ease;
+    }
+    .gallery-item:hover img { transform: scale(1.05); }
+    .gallery-item .overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(3,35,82,.75) 0%, transparent 55%);
+      opacity: 0; transition: opacity .3s;
+      display: flex; align-items: flex-end; padding: 1.4rem;
+    }
+    .gallery-item:hover .overlay { opacity: 1; }
+    .overlay-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem; color: var(--offwhite); letter-spacing: .05em;
+    }
+    .empty-state {
+      grid-column: 1/-1; text-align: center; padding: 5rem 2rem;
+      color: var(--muted);
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.1rem;
+      border: 1px dashed rgba(72,102,162,.25);
+    }
 
-        .hero {
-            height: 80vh;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
+    /* ── VIDEOS SECTION ── */
+    #videos-wrap {
+      background: linear-gradient(180deg, #071d45 0%, var(--navy-deep) 100%);
+    }
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 0;
+    }
+    .video-item {
+      position: relative; background: var(--navy-mid);
+      aspect-ratio: 16/9; overflow: hidden;
+      border: 1px solid rgba(3,35,82,.8);
+      cursor: pointer;
+    }
+    .video-item video, .video-item iframe { width: 100%; height: 100%; object-fit: cover; }
+    .video-play {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(3,35,82,.3); transition: background .2s;
+    }
+    .video-play svg { width: 54px; height: 54px; fill: rgba(255,248,253,.8); filter: drop-shadow(0 2px 8px rgba(3,35,82,.5)); }
+    .video-item:hover .video-play { background: rgba(3,35,82,.1); }
+    .video-caption {
+      position: absolute; bottom: 0; left: 0; right: 0; padding: .8rem 1.2rem;
+      background: linear-gradient(transparent, rgba(3,35,82,.9));
+      font-size: .72rem; letter-spacing: .12em; color: var(--lavender);
+      text-transform: uppercase;
+    }
 
-        .hero-content h2 {
-            font-size: 42px;
-            font-weight: 300;
-            margin-bottom: 15px;
-            letter-spacing: 2px;
-            color: #1a1a1a;
-        }
+    /* ── ABOUT — LIK style: large photo left, text right ── */
+    #about-wrap { background: var(--navy-deep); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0; align-items: stretch;
+      min-height: 600px;
+    }
+    .about-photo {
+      background: var(--navy-mid); overflow: hidden; position: relative;
+    }
+    .about-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .about-photo-placeholder {
+      width: 100%; height: 100%; min-height: 500px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(194,188,200,.2);
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1rem; border: 1px dashed rgba(72,102,162,.2);
+      cursor: pointer;
+    }
+    .about-text-panel {
+      padding: 6rem 5rem;
+      display: flex; flex-direction: column; justify-content: center;
+      background: linear-gradient(135deg, #071d45 0%, var(--navy-deep) 100%);
+    }
+    .about-text-panel .section-desc { max-width: 100%; margin-bottom: 2rem; }
+    .about-body {
+      color: rgba(194,188,200,.8); font-size: .88rem; line-height: 2;
+    }
+    .about-body p + p { margin-top: 1.2rem; }
 
-        .hero-content .subtitle {
-            font-size: 32px;
-            font-weight: 300;
-            margin-bottom: 30px;
-            letter-spacing: 1px;
-            color: #333;
-        }
+    /* ── CONTACT ── */
+    #contact-wrap {
+      background: linear-gradient(180deg, var(--navy-deep) 0%, #071d45 100%);
+    }
+    .contact-inner { text-align: center; max-width: 600px; margin: 0 auto; }
+    .contact-divider {
+      width: 1px; height: 60px; background: var(--blue-acc);
+      margin: 2rem auto;
+    }
+    .contact-email {
+      display: inline-block;
+      font-family: 'Nixie One', monospace;
+      font-size: clamp(.85rem, 1.8vw, 1.15rem);
+      letter-spacing: .12em; color: var(--blue-light);
+      border-bottom: 1px solid rgba(72,102,162,.5);
+      padding-bottom: .3rem;
+      transition: color .2s, border-color .2s;
+    }
+    .contact-email:hover { color: var(--offwhite); border-color: var(--offwhite); }
 
-        .hero-content p {
-            font-size: 18px;
-            color: #666;
-            max-width: 700px;
-            margin: 0 auto 40px;
-            line-height: 1.8;
-        }
+    /* ── FOOTER — LIK-style columns ── */
+    footer {
+      background: #020e2a;
+      border-top: 1px solid rgba(72,102,162,.15);
+      padding: 5rem 3rem 2.5rem;
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem; margin-bottom: 4rem;
+    }
+    .footer-brand .footer-logo {
+      font-family: 'Nixie One', monospace;
+      font-size: 1.5rem; letter-spacing: .2em; color: var(--offwhite);
+      margin-bottom: 1rem;
+    }
+    .footer-brand p {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      color: var(--muted); font-size: .95rem; line-height: 1.7;
+      max-width: 280px;
+    }
+    .footer-col h4 {
+      font-size: .6rem; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--blue-light); margin-bottom: 1.4rem;
+      border-bottom: 1px solid rgba(72,102,162,.2); padding-bottom: .7rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: .65rem; }
+    .footer-col ul a {
+      font-size: .75rem; letter-spacing: .08em; color: rgba(194,188,200,.6);
+      transition: color .2s;
+    }
+    .footer-col ul a:hover { color: var(--offwhite); }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid rgba(72,102,162,.1); padding-top: 2rem;
+      font-size: .62rem; letter-spacing: .15em; text-transform: uppercase;
+      color: rgba(194,188,200,.3);
+    }
+    .footer-social { display: flex; gap: 1.5rem; }
+    .footer-social a {
+      font-size: .62rem; letter-spacing: .15em; text-transform: uppercase;
+      color: rgba(194,188,200,.35); transition: color .2s;
+    }
+    .footer-social a:hover { color: var(--muted); }
 
-        .upload-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+    /* ── LIGHTBOX ── */
+    #lightbox {
+      display: none; position: fixed; inset: 0; z-index: 999;
+      background: rgba(2,14,42,.97); backdrop-filter: blur(12px);
+      align-items: center; justify-content: center;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img { max-width: 90vw; max-height: 88vh; object-fit: contain; }
+    #lb-close {
+      position: absolute; top: 1.5rem; right: 2rem;
+      font-size: 2rem; color: rgba(194,188,200,.6); cursor: pointer;
+      background: none; border: none; line-height: 1; transition: color .2s;
+    }
+    #lb-close:hover { color: var(--offwhite); }
 
-        .upload-btn {
-            padding: 12px 40px;
-            font-size: 14px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border: 2px solid #333;
-            background: white;
-            color: #333;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
+    /* ── ADMIN ── */
+    #admin-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(2,14,42,.98); backdrop-filter: blur(14px);
+      overflow-y: auto;
+    }
+    #admin-overlay.open { display: block; }
+    #admin-panel { max-width: 800px; margin: 4rem auto; padding: 3rem; }
+    .admin-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(72,102,162,.25); padding-bottom: 1.5rem;
+    }
+    .admin-header h2 {
+      font-family: 'Nixie One', monospace;
+      font-size: 1.3rem; letter-spacing: .18em; color: var(--offwhite);
+    }
+    #admin-close {
+      background: none; border: none; color: var(--muted);
+      font-size: 1.8rem; cursor: pointer; line-height: 1; transition: color .2s;
+    }
+    #admin-close:hover { color: var(--offwhite); }
+    .admin-tabs {
+      display: flex; margin-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(72,102,162,.25);
+    }
+    .admin-tab {
+      padding: .75rem 2rem; font-size: .68rem; letter-spacing: .2em;
+      text-transform: uppercase; background: none; border: none;
+      color: var(--muted); cursor: pointer;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      transition: color .2s, border-color .2s;
+    }
+    .admin-tab.active { color: var(--offwhite); border-color: var(--blue-acc); }
+    .admin-section { display: none; }
+    .admin-section.active { display: block; }
+    .drop-zone {
+      border: 1px dashed rgba(72,102,162,.4); padding: 3rem 2rem;
+      text-align: center; cursor: pointer;
+      transition: border-color .2s, background .2s; margin-bottom: 1.5rem;
+    }
+    .drop-zone:hover, .drop-zone.drag {
+      border-color: var(--blue-acc); background: rgba(72,102,162,.07);
+    }
+    .drop-zone strong {
+      display: block; color: var(--blue-light);
+      font-size: .75rem; letter-spacing: .12em; text-transform: uppercase;
+    }
+    .drop-zone p { color: var(--muted); font-size: .82rem; margin-top: .5rem; }
+    .drop-zone input[type=file] { display: none; }
+    .admin-field { margin-bottom: 1.2rem; }
+    .admin-field label {
+      display: block; font-size: .67rem; letter-spacing: .15em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: .4rem;
+    }
+    .admin-field input, .admin-field select {
+      width: 100%; padding: .7rem 1rem;
+      background: rgba(72,102,162,.1); border: 1px solid rgba(72,102,162,.25);
+      color: var(--offwhite); font-size: .88rem; outline: none;
+      transition: border-color .2s;
+    }
+    .admin-field input:focus, .admin-field select:focus { border-color: var(--blue-acc); }
+    .admin-field select option { background: var(--navy-deep); }
+    .btn-primary {
+      width: 100%; padding: .9rem;
+      background: var(--blue-acc); border: none;
+      color: var(--offwhite); font-size: .72rem; letter-spacing: .22em;
+      text-transform: uppercase; cursor: pointer; transition: background .2s;
+    }
+    .btn-primary:hover { background: #5f76a8; }
+    .admin-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
+      gap: .6rem; margin-top: 2rem;
+    }
+    .admin-thumb {
+      position: relative; aspect-ratio: 1;
+      background: var(--navy-mid); overflow: hidden;
+    }
+    .admin-thumb img, .admin-thumb video { width:100%; height:100%; object-fit:cover; }
+    .admin-thumb .rm {
+      position: absolute; top:.3rem; right:.3rem;
+      background: rgba(3,35,82,.85); border:none; color:var(--muted);
+      width:22px; height:22px; border-radius:50%; font-size:.8rem;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition: color .2s;
+    }
+    .admin-thumb .rm:hover { color:#e07; }
+    .admin-thumb .lbl {
+      position:absolute; bottom:0; left:0; right:0;
+      font-size:.55rem; padding:.25rem .4rem;
+      background:rgba(3,35,82,.8); color:var(--muted);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
 
-        .upload-btn:hover {
-            background: #333;
-            color: white;
-        }
-
-        section {
-            padding: 80px 0;
-            background: white;
-            margin-bottom: 40px;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-
-        .section-number {
-            font-size: 48px;
-            color: #ddd;
-            font-weight: 300;
-            min-width: 60px;
-        }
-
-        .section-title {
-            font-size: 36px;
-            font-weight: 300;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-        }
-
-        .section-desc {
-            color: #666;
-            font-size: 14px;
-            line-height: 1.8;
-            max-width: 600px;
-        }
-
-        .featured-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-        }
-
-        .photo-item {
-            background: #f5f5f5;
-            aspect-ratio: 1;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
-        }
-
-        .photo-item:hover img {
-            transform: scale(1.05);
-        }
-
-        .video-item {
-            background: #f5f5f5;
-        }
-
-        .video-frame {
-            width: 100%;
-            padding-bottom: 56.25%;
-            position: relative;
-            background: #000;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .video-frame iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .video-frame video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .video-info h3 {
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-
-        .video-info p {
-            font-size: 13px;
-            color: #666;
-        }
-
-        footer {
-            background: #fff;
-            padding: 60px 0;
-            border-top: 1px solid #eee;
-            text-align: center;
-            font-size: 12px;
-            color: #999;
-        }
-
-        .menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .empty-state {
-            grid-column: 1/-1;
-            text-align: center;
-            color: #999;
-            padding: 40px;
-        }
-
-        .admin-section {
-            background: #f9f9f9;
-            padding: 40px;
-            border-radius: 8px;
-            margin-bottom: 40px;
-        }
-
-        .admin-section h3 {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-
-        .file-input-wrapper input[type=file] {
-            position: absolute;
-            left: -9999px;
-        }
-
-        .file-input-label {
-            padding: 10px 20px;
-            background: #333;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-            display: inline-block;
-            font-size: 13px;
-        }
-
-        .file-input-label:hover {
-            background: #555;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 20px;
-            }
-
-            nav {
-                display: none;
-            }
-
-            .menu-btn {
-                display: block;
-            }
-
-            .hero-content h2 {
-                font-size: 28px;
-            }
-
-            .hero-content .subtitle {
-                font-size: 22px;
-            }
-
-            .hero-content p {
-                font-size: 16px;
-            }
-
-            .section-title {
-                font-size: 24px;
-            }
-
-            .featured-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .section-header {
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            .upload-buttons {
-                flex-direction: column;
-            }
-
-            .upload-btn {
-                width: 100%;
-            }
-        }
-    </style>
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .about-text-panel { padding: 4rem 3rem; }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      nav.scrolled { padding: .9rem 1.5rem; }
+      .nav-links { display: none; }
+      .section-wrap { padding: 5rem 1.5rem; }
+      .gallery-grid { grid-template-columns: repeat(2,1fr); }
+      .video-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+      .editorial-banner { aspect-ratio: 4/3; }
+      .editorial-banner .banner-overlay { padding: 2rem; }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <h1>SIDNEY PEREIRA</h1>
-                <nav>
-                    <a href="#portfolio">/01 PORTFOLIO</a>
-                    <a href="#videos">/02 VIDEOS</a>
-                    <a href="#about">/03 SOBRE</a>
-                    <a href="#contact">/04 CONTATO</a>
-                </nav>
-                <button class="menu-btn">☰</button>
-            </div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-logo">Sidney Pereira</div>
+  <ul class="nav-links">
+    <li><a href="#portfolio">/01 Portfólio</a></li>
+    <li><a href="#videos-wrap">/02 Vídeos</a></li>
+    <li><a href="#about-wrap">/03 Sobre</a></li>
+    <li><a href="#contact-wrap">/04 Contato</a></li>
+  </ul>
+  <button class="nav-admin" onclick="openAdmin()">Admin ↗</button>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-bg" id="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-rule"></div>
+    <h1 class="hero-title">Sidney Pereira</h1>
+    <p class="hero-sub">Fine Art Photography</p>
+    <a href="#portfolio" class="hero-cta">Ver portfólio</a>
+  </div>
+  <div class="hero-scroll">scroll<span class="hero-scroll-line"></span></div>
+</div>
+
+<!-- FEATURED BANNER (first featured photo, LIK-style) -->
+<div class="editorial-banner empty-banner" id="featured-banner">
+  <span>Adicione uma foto em destaque pelo painel Admin</span>
+</div>
+
+<!-- PORTFOLIO -->
+<div id="portfolio">
+  <div class="section-wrap">
+    <div class="section-header" style="display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+      <div>
+        <p class="section-label">/01</p>
+        <h2 class="section-title">Portfólio</h2>
+        <p class="section-desc">Galeria de trabalhos fotográficos selecionados.</p>
+      </div>
+      <div class="category-nav" id="cat-nav" style="border:none; padding:0; margin:0;">
+        <button class="cat-btn active" data-cat="all">Todos</button>
+      </div>
+    </div>
+    <div class="gallery-grid" id="gallery-grid">
+      <div class="empty-state" id="gallery-empty">
+        Nenhuma foto adicionada ainda. Use o painel Admin para fazer upload.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VIDEOS -->
+<div id="videos-wrap">
+  <div class="section-wrap">
+    <div class="section-header">
+      <p class="section-label">/02</p>
+      <h2 class="section-title">Vídeos</h2>
+      <p class="section-desc">O processo criativo em movimento.</p>
+    </div>
+  </div>
+  <div class="video-grid" id="video-grid">
+    <div class="empty-state" style="border:1px dashed rgba(72,102,162,.2); margin:0 3rem 4rem;" id="video-empty">
+      Nenhum vídeo adicionado ainda. Use o painel Admin para fazer upload.
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div id="about-wrap">
+  <div class="about-grid">
+    <div class="about-photo" id="about-photo-wrap">
+      <div class="about-photo-placeholder" id="about-placeholder" onclick="document.getElementById('about-input').click()">
+        Clique para adicionar foto de perfil
+      </div>
+      <img id="about-img" src="" alt="Sidney Pereira" style="display:none; position:absolute; inset:0; width:100%; height:100%;" />
+    </div>
+    <div class="about-text-panel">
+      <p class="section-label">/03</p>
+      <h2 class="section-title">Sobre</h2>
+      <p class="section-desc">Comunicação visual com propósito.</p>
+      <div class="about-body">
+        <p>Fotógrafo especializado em fine art photography, com foco em composição, luz e narrativa visual.</p>
+        <p>Com experiência em comunicação política, media training e gestão de crise, Sidney Pereira une sensibilidade artística e estratégia de comunicação para contar histórias que impactam.</p>
+        <p>CEO da Sidney Pereira InsightTech — consultoria em estratégia visual para marcas e personalidades públicas.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact-wrap">
+  <div class="section-wrap">
+    <div class="contact-inner">
+      <p class="section-label">/04</p>
+      <h2 class="section-title">Contato</h2>
+      <p class="section-desc" style="max-width:100%; margin:0 auto;">Para projetos, parcerias e consultoria.</p>
+      <div class="contact-divider"></div>
+      <a href="mailto:sidneypereirainsighttech@gmail.com" class="contact-email">
+        sidneypereirainsighttech@gmail.com
+      </a>
+      <p style="margin-top:1.5rem; font-size:.65rem; letter-spacing:.2em; text-transform:uppercase; color:rgba(194,188,200,.35);">Sidney Pereira InsightTech</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo">SP</div>
+      <p>Explorando a beleza através da lente. Fine art photography para quem busca o extraordinário.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Portfólio</h4>
+      <ul>
+        <li><a href="#portfolio">Todos os trabalhos</a></li>
+        <li><a href="#portfolio">Política</a></li>
+        <li><a href="#portfolio">Natureza</a></li>
+        <li><a href="#portfolio">Retratos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Conteúdo</h4>
+      <ul>
+        <li><a href="#videos-wrap">Vídeos</a></li>
+        <li><a href="#about-wrap">Sobre</a></li>
+        <li><a href="#contact-wrap">Contato</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Redes</h4>
+      <ul>
+        <li><a href="#" target="_blank">Instagram</a></li>
+        <li><a href="#" target="_blank">YouTube</a></li>
+        <li><a href="#" target="_blank">LinkedIn</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Sidney Pereira — Fine Art Photography</span>
+    <div class="footer-social">
+      <a href="#">Instagram</a>
+      <a href="#">YouTube</a>
+      <a href="#">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button id="lb-close" onclick="closeLightbox()">×</button>
+  <img id="lb-img" src="" alt="" />
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-overlay">
+  <div id="admin-panel">
+    <div class="admin-header">
+      <h2>Admin Panel</h2>
+      <button id="admin-close" onclick="closeAdmin()">×</button>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('photos',this)">Fotos</button>
+      <button class="admin-tab" onclick="switchTab('videos',this)">Vídeos</button>
+      <button class="admin-tab" onclick="switchTab('settings',this)">Configurações</button>
+    </div>
+
+    <!-- PHOTOS -->
+    <div class="admin-section active" id="tab-photos">
+      <div class="drop-zone" id="photo-drop" onclick="document.getElementById('photo-input').click()">
+        <strong>📸 Arraste fotos ou clique para selecionar</strong>
+        <p>JPG, PNG, WEBP — múltiplos arquivos, exportados do Photoshop</p>
+        <input type="file" id="photo-input" accept="image/*" multiple onchange="handlePhotoUpload(event)" />
+      </div>
+      <div class="admin-field">
+        <label>Categoria</label>
+        <select id="photo-cat">
+          <option value="geral">Geral</option>
+          <option value="politica">Política</option>
+          <option value="natureza">Natureza</option>
+          <option value="eventos">Eventos</option>
+          <option value="retrato">Retrato</option>
+          <option value="urbano">Urbano</option>
+        </select>
+      </div>
+      <div class="admin-field">
+        <label>Nova categoria (opcional)</label>
+        <input type="text" id="new-cat" placeholder="ex: Arquitetura" />
+      </div>
+      <div class="admin-grid" id="photo-preview"></div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="admin-section" id="tab-videos">
+      <div class="drop-zone" id="video-drop" onclick="document.getElementById('video-input').click()">
+        <strong>🎬 Arraste vídeos ou clique para selecionar</strong>
+        <p>MP4, MOV, WEBM — exportados do Premiere</p>
+        <input type="file" id="video-input" accept="video/*" multiple onchange="handleVideoUpload(event)" />
+      </div>
+      <div class="admin-field">
+        <label>Ou cole URL do YouTube / Vimeo</label>
+        <input type="text" id="video-url" placeholder="https://youtube.com/watch?v=..." />
+      </div>
+      <div class="admin-field">
+        <label>Título</label>
+        <input type="text" id="video-title" placeholder="Nome do projeto" />
+      </div>
+      <button class="btn-primary" onclick="addVideoByUrl()">Adicionar por URL</button>
+      <div class="admin-grid" id="video-preview"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="admin-section" id="tab-settings">
+      <div class="admin-field">
+        <label>Foto de capa (hero)</label>
+        <div class="drop-zone" onclick="document.getElementById('hero-input').click()" style="padding:1.5rem;">
+          <strong>Selecionar foto de capa</strong>
+          <p>Exibida em tela cheia atrás do título</p>
+          <input type="file" id="hero-input" accept="image/*" onchange="setHeroBg(event)" />
         </div>
-    </header>
-
-    <section class="hero">
-        <div class="hero-content">
-            <h2>SIDNEY PEREIRA</h2>
-            <p class="subtitle">Fine Art Photography</p>
-            <p>Explorando a beleza através da lente. Cada imagem conta uma história.</p>
-            <div class="upload-buttons">
-                <button class="upload-btn" onclick="document.getElementById('fotoInput').click()">📸 Upload Fotos</button>
-                <button class="upload-btn" onclick="document.getElementById('videoInput').click()">🎬 Upload Vídeos</button>
-            </div>
-            <input type="file" id="fotoInput" multiple accept="image/*" style="display:none;">
-            <input type="file" id="videoInput" multiple accept="video/*" style="display:none;">
+      </div>
+      <div class="admin-field">
+        <label>Foto de perfil (seção Sobre)</label>
+        <div class="drop-zone" onclick="document.getElementById('about-input').click()" style="padding:1.5rem;">
+          <strong>Selecionar foto de perfil</strong>
+          <input type="file" id="about-input" accept="image/*" onchange="setAboutImg(event)" />
         </div>
-    </section>
-
-    <section id="portfolio">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-number">/01</div>
-                <div>
-                    <h2 class="section-title">Portfólio</h2>
-                    <p class="section-desc">Galeria de trabalhos fotográficos selecionados.</p>
-                </div>
-            </div>
-            <div class="admin-section">
-                <h3>Adicionar Nova Foto</h3>
-                <div class="file-input-wrapper">
-                    <label class="file-input-label" for="addFotoInput">Selecionar Foto</label>
-                    <input type="file" id="addFotoInput" accept="image/*">
-                </div>
-                <input type="text" id="fotoTitulo" placeholder="Título da foto" style="margin-left: 10px; padding: 8px 10px;">
-                <button onclick="adicionarFoto()" style="margin-left: 10px; padding: 8px 15px; background: #333; color: white; border: none; cursor: pointer;">Adicionar</button>
-            </div>
-            <div class="featured-grid" id="fotosGrid">
-                <div class="empty-state">Nenhuma foto adicionada ainda.</div>
-            </div>
+      </div>
+      <div class="admin-field">
+        <label>Foto em destaque (banner abaixo do hero)</label>
+        <div class="drop-zone" onclick="document.getElementById('featured-input').click()" style="padding:1.5rem;">
+          <strong>Selecionar foto destaque</strong>
+          <p>Aparece como banner editorial full-width</p>
+          <input type="file" id="featured-input" accept="image/*" onchange="setFeaturedBanner(event)" />
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <section id="videos">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-number">/02</div>
-                <div>
-                    <h2 class="section-title">Vídeos</h2>
-                    <p class="section-desc">Explore vídeos que mostram o processo criativo.</p>
-                </div>
-            </div>
-            <div class="admin-section">
-                <h3>Adicionar Novo Vídeo</h3>
-                <div class="file-input-wrapper">
-                    <label class="file-input-label" for="addVideoInput">Selecionar Vídeo</label>
-                    <input type="file" id="addVideoInput" accept="video/*">
-                </div>
-                <input type="text" id="videoTitulo" placeholder="Título do vídeo" style="margin-left: 10px; padding: 8px 10px;">
-                <input type="text" id="videoDescricao" placeholder="Descrição (opcional)" style="margin-left: 10px; padding: 8px 10px;">
-                <button onclick="adicionarVideo()" style="margin-left: 10px; padding: 8px 15px; background: #333; color: white; border: none; cursor: pointer;">Adicionar</button>
-            </div>
-            <div class="featured-grid" id="videosGrid">
-                <div class="empty-state">Nenhum vídeo adicionado ainda.</div>
-            </div>
-        </div>
-    </section>
+<script>
+  let photos = JSON.parse(localStorage.getItem('sp_photos') || '[]');
+  let videos = JSON.parse(localStorage.getItem('sp_videos') || '[]');
+  let activeCategory = 'all';
 
-    <section id="about">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-number">/03</div>
-                <div>
-                    <h2 class="section-title">Sobre</h2>
-                    <p class="section-desc">Fotógrafo especializado em fine art photography, trabalhando com foco em composição, luz e narrativa visual. Com experiência em comunicação política, media training e gestão de crise. Criador de conteúdo e consultor em estratégia visual para marcas e personalidades públicas.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 80);
+  });
 
-    <section id="contact">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-number">/04</div>
-                <div>
-                    <h2 class="section-title">Contato</h2>
-                    <p class="section-desc">Entre em contato para projetos, dúvidas ou parcerias.<br><strong>Sidney Pereira InsightTech</strong></p>
-                </div>
-            </div>
-        </div>
-    </section>
+  // Admin
+  function openAdmin() { document.getElementById('admin-overlay').classList.add('open'); }
+  function closeAdmin() { document.getElementById('admin-overlay').classList.remove('open'); }
+  function switchTab(name, btn) {
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 Sidney Pereira. Fine Art Photography. Todos os direitos reservados.</p>
-        </div>
-    </footer>
+  // Hero bg
+  function setHeroBg(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      const bg = document.getElementById('hero-bg');
+      bg.style.background = 'url(' + ev.target.result + ') center/cover no-repeat';
+      localStorage.setItem('sp_herobg', ev.target.result);
+    };
+    r.readAsDataURL(file);
+  }
 
-    <script>
-        let db;
-        const dbName = "SidneyPhotoDB";
-        const storeName = "videos";
+  // About photo
+  function setAboutImg(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      const img = document.getElementById('about-img');
+      img.src = ev.target.result; img.style.display = 'block';
+      document.getElementById('about-placeholder').style.display = 'none';
+      localStorage.setItem('sp_aboutimg', ev.target.result);
+    };
+    r.readAsDataURL(file);
+  }
 
-        function initDB() {
-            return new Promise((resolve, reject) => {
-                try {
-                    const request = indexedDB.open(dbName, 1);
-                    
-                    request.onerror = () => reject(request.error);
-                    request.onsuccess = () => {
-                        db = request.result;
-                        resolve(db);
-                    };
-                    
-                    request.onupgradeneeded = (e) => {
-                        const database = e.target.result;
-                        if (!database.objectStoreNames.contains(storeName)) {
-                            database.createObjectStore(storeName, { keyPath: 'id' });
-                        }
-                    };
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        }
+  // Featured banner
+  function setFeaturedBanner(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      const banner = document.getElementById('featured-banner');
+      banner.classList.remove('empty-banner');
+      banner.innerHTML = `
+        <img src="${ev.target.result}" alt="Destaque" />
+        <div class="banner-overlay">
+          <span class="banner-label">Em destaque</span>
+          <h2 class="banner-title">Fine Art Photography</h2>
+          <a href="#portfolio" class="banner-link">Ver portfólio completo →</a>
+        </div>`;
+      localStorage.setItem('sp_featured', ev.target.result);
+    };
+    r.readAsDataURL(file);
+  }
 
-        function adicionarFoto() {
-            const fileInput = document.getElementById('addFotoInput');
-            const titulo = document.getElementById('fotoTitulo').value || 'Sem título';
-            
-            if (!fileInput.files[0]) {
-                alert('Selecione uma foto');
-                return;
-            }
+  // Photos
+  function handlePhotoUpload(e) {
+    const files = Array.from(e.target.files);
+    const cat = document.getElementById('photo-cat').value;
+    const nc = document.getElementById('new-cat').value.trim();
+    const finalCat = nc || cat;
+    files.forEach(file => {
+      const r = new FileReader();
+      r.onload = ev => {
+        photos.push({ id: Date.now() + Math.random(), src: ev.target.result, cat: finalCat, name: file.name });
+        savePhotos(); renderGallery(); renderAdminPhotos(); buildCategoryNav();
+      };
+      r.readAsDataURL(file);
+    });
+    e.target.value = '';
+  }
+  function savePhotos() { localStorage.setItem('sp_photos', JSON.stringify(photos)); }
+  function renderGallery() {
+    const grid = document.getElementById('gallery-grid');
+    const empty = document.getElementById('gallery-empty');
+    const filtered = activeCategory === 'all' ? photos : photos.filter(p => p.cat === activeCategory);
+    if (!filtered.length) { grid.innerHTML = ''; grid.appendChild(empty); empty.style.display='block'; return; }
+    empty.style.display = 'none'; grid.innerHTML = '';
+    filtered.forEach(p => {
+      const d = document.createElement('div'); d.className = 'gallery-item';
+      d.innerHTML = `<img src="${p.src}" alt="${p.name}" loading="lazy"/>
+        <div class="overlay"><span class="overlay-title">${p.name.replace(/\.[^.]+$/,'')}</span></div>`;
+      d.onclick = () => openLightbox(p.src);
+      grid.appendChild(d);
+    });
+  }
+  function renderAdminPhotos() {
+    const w = document.getElementById('photo-preview'); w.innerHTML = '';
+    photos.forEach(p => {
+      const d = document.createElement('div'); d.className = 'admin-thumb';
+      d.innerHTML = `<img src="${p.src}"/><span class="lbl">${p.cat} · ${p.name}</span>
+        <button class="rm" onclick="removePhoto('${p.id}')">×</button>`;
+      w.appendChild(d);
+    });
+  }
+  function removePhoto(id) {
+    photos = photos.filter(p => String(p.id) !== String(id));
+    savePhotos(); renderGallery(); renderAdminPhotos(); buildCategoryNav();
+  }
+  function buildCategoryNav() {
+    const cats = ['all', ...new Set(photos.map(p => p.cat))];
+    const nav = document.getElementById('cat-nav'); nav.innerHTML = '';
+    cats.forEach(c => {
+      const b = document.createElement('button'); b.className = 'cat-btn' + (c === activeCategory ? ' active' : '');
+      b.textContent = c === 'all' ? 'Todos' : c.charAt(0).toUpperCase() + c.slice(1);
+      b.onclick = () => { activeCategory = c; buildCategoryNav(); renderGallery(); };
+      nav.appendChild(b);
+    });
+  }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const fotos = JSON.parse(localStorage.getItem("fotos")) || [];
-                fotos.push({
-                    url: e.target.result,
-                    titulo: titulo
-                });
-                localStorage.setItem("fotos", JSON.stringify(fotos));
-                carregarFotos();
-                document.getElementById('fotoTitulo').value = '';
-                fileInput.value = '';
-                alert('Foto adicionada com sucesso!');
-            };
-            reader.readAsDataURL(fileInput.files[0]);
-        }
+  // Videos
+  function handleVideoUpload(e) {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      const r = new FileReader();
+      r.onload = ev => {
+        videos.push({ id: Date.now() + Math.random(), type: 'file', src: ev.target.result, title: file.name.replace(/\.[^.]+$/,'') });
+        saveVideos(); renderVideos(); renderAdminVideos();
+      };
+      r.readAsDataURL(file);
+    });
+    e.target.value = '';
+  }
+  function addVideoByUrl() {
+    const url = document.getElementById('video-url').value.trim();
+    const title = document.getElementById('video-title').value.trim() || 'Sem título';
+    if (!url) return;
+    videos.push({ id: Date.now(), type: 'embed', src: getEmbedUrl(url), title });
+    saveVideos(); renderVideos(); renderAdminVideos();
+    document.getElementById('video-url').value = '';
+    document.getElementById('video-title').value = '';
+  }
+  function getEmbedUrl(url) {
+    let m;
+    if ((m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?]+)/))) return 'https://www.youtube.com/embed/' + m[1];
+    if ((m = url.match(/vimeo\.com\/(\d+)/))) return 'https://player.vimeo.com/video/' + m[1];
+    return url;
+  }
+  function saveVideos() { localStorage.setItem('sp_videos', JSON.stringify(videos)); }
+  function renderVideos() {
+    const grid = document.getElementById('video-grid');
+    const empty = document.getElementById('video-empty');
+    if (!videos.length) { grid.innerHTML = ''; grid.appendChild(empty); empty.style.display='block'; return; }
+    empty.style.display = 'none'; grid.innerHTML = '';
+    videos.forEach(v => {
+      const d = document.createElement('div'); d.className = 'video-item';
+      if (v.type === 'embed') {
+        d.innerHTML = `<iframe src="${v.src}" frameborder="0" allowfullscreen></iframe><span class="video-caption">${v.title}</span>`;
+      } else {
+        d.innerHTML = `<video src="${v.src}" preload="metadata"></video>
+          <div class="video-play" onclick="this.previousElementSibling.play();this.style.display='none'">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div><span class="video-caption">${v.title}</span>`;
+      }
+      grid.appendChild(d);
+    });
+  }
+  function renderAdminVideos() {
+    const w = document.getElementById('video-preview'); w.innerHTML = '';
+    videos.forEach(v => {
+      const d = document.createElement('div'); d.className = 'admin-thumb';
+      d.innerHTML = v.type==='embed'
+        ? `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--navy-mid);font-size:.6rem;color:var(--muted);padding:.3rem;text-align:center;">${v.title}</div>`
+        : `<video src="${v.src}"></video>`;
+      d.innerHTML += `<span class="lbl">${v.title}</span><button class="rm" onclick="removeVideo('${v.id}')">×</button>`;
+      w.appendChild(d);
+    });
+  }
+  function removeVideo(id) {
+    videos = videos.filter(v => String(v.id) !== String(id));
+    saveVideos(); renderVideos(); renderAdminVideos();
+  }
 
-        function adicionarVideo() {
-            const fileInput = document.getElementById('addVideoInput');
-            const titulo = document.getElementById('videoTitulo').value || 'Sem título';
-            const descricao = document.getElementById('videoDescricao').value || '';
-            
-            if (!fileInput.files[0]) {
-                alert('Selecione um vídeo');
-                return;
-            }
+  // Lightbox
+  function openLightbox(src) { document.getElementById('lb-img').src = src; document.getElementById('lightbox').classList.add('open'); }
+  function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+  document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target===this) closeLightbox(); });
+  document.addEventListener('keydown', e => { if (e.key==='Escape') { closeLightbox(); closeAdmin(); } });
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const video = {
-                    id: Date.now(),
-                    url: e.target.result,
-                    titulo: titulo,
-                    descricao: descricao
-                };
+  // Drag & drop
+  ['photo-drop','video-drop'].forEach(id => {
+    const z = document.getElementById(id);
+    z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('drag'); });
+    z.addEventListener('dragleave', () => z.classList.remove('drag'));
+    z.addEventListener('drop', e => {
+      e.preventDefault(); z.classList.remove('drag');
+      const inp = z.querySelector('input[type=file]');
+      const dt = new DataTransfer();
+      Array.from(e.dataTransfer.files).forEach(f => dt.items.add(f));
+      inp.files = dt.files; inp.dispatchEvent(new Event('change'));
+    });
+  });
 
-                const transaction = db.transaction([storeName], "readwrite");
-                const store = transaction.objectStore(storeName);
-                store.add(video);
-
-                carregarVideos();
-                document.getElementById('videoTitulo').value = '';
-                document.getElementById('videoDescricao').value = '';
-                fileInput.value = '';
-                alert('Vídeo adicionado com sucesso!');
-            };
-            reader.readAsDataURL(fileInput.files[0]);
-        }
-
-        function carregarFotos() {
-            try {
-                const fotos = JSON.parse(localStorage.getItem("fotos")) || [];
-                const grid = document.getElementById("fotosGrid");
-
-                if (fotos.length === 0) {
-                    grid.innerHTML = '<div class="empty-state">Nenhuma foto adicionada ainda.</div>';
-                    return;
-                }
-
-                grid.innerHTML = fotos.map(foto => `
-                    <div class="photo-item">
-                        <img src="${foto.url}" alt="${foto.titulo || 'Foto'}">
-                    </div>
-                `).join("");
-            } catch (e) {
-                console.log("Erro ao carregar fotos:", e);
-            }
-        }
-
-        function carregarVideos() {
-            if (!db) return;
-            
-            try {
-                const transaction = db.transaction([storeName], "readonly");
-                const store = transaction.objectStore(storeName);
-                const request = store.getAll();
-                
-                request.onsuccess = () => {
-                    const videos = request.result;
-                    const grid = document.getElementById("videosGrid");
-
-                    if (videos.length === 0) {
-                        grid.innerHTML = '<div class="empty-state">Nenhum vídeo adicionado ainda.</div>';
-                        return;
-                    }
-
-                    grid.innerHTML = videos.map(video => {
-                        let conteudo = '';
-                        
-                        if (video.url.startsWith('data:video')) {
-                            conteudo = `<video controls style="width: 100%; height: 100%;"><source src="${video.url}" type="video/mp4"></video>`;
-                        } else if (video.url.includes('youtube.com') || video.url.includes('youtu.be')) {
-                            const videoId = video.url.split('v=')[1] || video.url.split('/').pop();
-                            conteudo = `<iframe src="https://www.youtube.com/embed/${videoId}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-                        } else if (video.url.includes('vimeo.com')) {
-                            const videoId = video.url.split('/').pop();
-                            conteudo = `<iframe src="https://player.vimeo.com/video/${videoId}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-                        }
-                        
-                        return `
-                        <div class="video-item">
-                            <div class="video-frame">
-                                ${conteudo}
-                            </div>
-                            <div class="video-info">
-                                <h3>${video.titulo || 'Vídeo'}</h3>
-                                <p>${video.descricao || ''}</p>
-                            </div>
-                        </div>`;
-                    }).join("");
-                };
-            } catch (e) {
-                console.log("Erro ao carregar vídeos:", e);
-            }
-        }
-
-        window.addEventListener("load", async () => {
-            try {
-                await initDB();
-            } catch (e) {
-                console.log("IndexedDB não disponível");
-            }
-            carregarFotos();
-            carregarVideos();
-        });
-    </script>
+  // Init
+  (function() {
+    const hbg = localStorage.getItem('sp_herobg');
+    if (hbg) document.getElementById('hero-bg').style.background = 'url('+hbg+') center/cover no-repeat';
+    const aimg = localStorage.getItem('sp_aboutimg');
+    if (aimg) { const i=document.getElementById('about-img'); i.src=aimg; i.style.display='block'; document.getElementById('about-placeholder').style.display='none'; }
+    const feat = localStorage.getItem('sp_featured');
+    if (feat) {
+      const b = document.getElementById('featured-banner');
+      b.classList.remove('empty-banner');
+      b.innerHTML = `<img src="${feat}" alt="Destaque"/>
+        <div class="banner-overlay"><span class="banner-label">Em destaque</span>
+        <h2 class="banner-title">Fine Art Photography</h2>
+        <a href="#portfolio" class="banner-link">Ver portfólio completo →</a></div>`;
+    }
+    buildCategoryNav(); renderGallery(); renderVideos(); renderAdminPhotos(); renderAdminVideos();
+  })();
+</script>
 </body>
 </html>
