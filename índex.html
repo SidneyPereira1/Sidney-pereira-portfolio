@@ -73,17 +73,53 @@
         }
 
         .hero-content h2 {
-            font-size: 48px;
+            font-size: 42px;
             font-weight: 300;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            color: #1a1a1a;
+        }
+
+        .hero-content .subtitle {
+            font-size: 32px;
+            font-weight: 300;
+            margin-bottom: 30px;
             letter-spacing: 1px;
+            color: #333;
         }
 
         .hero-content p {
             font-size: 18px;
             color: #666;
-            max-width: 600px;
-            margin: 0 auto;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+
+        .upload-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .upload-btn {
+            padding: 12px 40px;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 2px solid #333;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .upload-btn:hover {
+            background: #333;
+            color: white;
         }
 
         section {
@@ -210,6 +246,43 @@
             padding: 40px;
         }
 
+        .admin-section {
+            background: #f9f9f9;
+            padding: 40px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+
+        .admin-section h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            padding: 10px 20px;
+            background: #333;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 13px;
+        }
+
+        .file-input-label:hover {
+            background: #555;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 0 20px;
@@ -224,7 +297,11 @@
             }
 
             .hero-content h2 {
-                font-size: 32px;
+                font-size: 28px;
+            }
+
+            .hero-content .subtitle {
+                font-size: 22px;
             }
 
             .hero-content p {
@@ -242,6 +319,14 @@
             .section-header {
                 flex-direction: column;
                 gap: 20px;
+            }
+
+            .upload-buttons {
+                flex-direction: column;
+            }
+
+            .upload-btn {
+                width: 100%;
             }
         }
     </style>
@@ -264,8 +349,15 @@
 
     <section class="hero">
         <div class="hero-content">
-            <h2>Fine Art Photography</h2>
-            <p>Explorando a beleza atraves da lente. Cada imagem conta uma historia.</p>
+            <h2>SIDNEY PEREIRA</h2>
+            <p class="subtitle">Fine Art Photography</p>
+            <p>Explorando a beleza através da lente. Cada imagem conta uma história.</p>
+            <div class="upload-buttons">
+                <button class="upload-btn" onclick="document.getElementById('fotoInput').click()">📸 Upload Fotos</button>
+                <button class="upload-btn" onclick="document.getElementById('videoInput').click()">🎬 Upload Vídeos</button>
+            </div>
+            <input type="file" id="fotoInput" multiple accept="image/*" style="display:none;">
+            <input type="file" id="videoInput" multiple accept="video/*" style="display:none;">
         </div>
     </section>
 
@@ -274,12 +366,21 @@
             <div class="section-header">
                 <div class="section-number">/01</div>
                 <div>
-                    <h2 class="section-title">Portfolio</h2>
-                    <p class="section-desc">Galeria de trabalhos fotograficos selecionados.</p>
+                    <h2 class="section-title">Portfólio</h2>
+                    <p class="section-desc">Galeria de trabalhos fotográficos selecionados.</p>
                 </div>
             </div>
+            <div class="admin-section">
+                <h3>Adicionar Nova Foto</h3>
+                <div class="file-input-wrapper">
+                    <label class="file-input-label" for="addFotoInput">Selecionar Foto</label>
+                    <input type="file" id="addFotoInput" accept="image/*">
+                </div>
+                <input type="text" id="fotoTitulo" placeholder="Título da foto" style="margin-left: 10px; padding: 8px 10px;">
+                <button onclick="adicionarFoto()" style="margin-left: 10px; padding: 8px 15px; background: #333; color: white; border: none; cursor: pointer;">Adicionar</button>
+            </div>
             <div class="featured-grid" id="fotosGrid">
-                <div class="empty-state">Carregando fotos...</div>
+                <div class="empty-state">Nenhuma foto adicionada ainda.</div>
             </div>
         </div>
     </section>
@@ -289,12 +390,22 @@
             <div class="section-header">
                 <div class="section-number">/02</div>
                 <div>
-                    <h2 class="section-title">Videos</h2>
-                    <p class="section-desc">Explore videos que mostram o processo criativo.</p>
+                    <h2 class="section-title">Vídeos</h2>
+                    <p class="section-desc">Explore vídeos que mostram o processo criativo.</p>
                 </div>
             </div>
+            <div class="admin-section">
+                <h3>Adicionar Novo Vídeo</h3>
+                <div class="file-input-wrapper">
+                    <label class="file-input-label" for="addVideoInput">Selecionar Vídeo</label>
+                    <input type="file" id="addVideoInput" accept="video/*">
+                </div>
+                <input type="text" id="videoTitulo" placeholder="Título do vídeo" style="margin-left: 10px; padding: 8px 10px;">
+                <input type="text" id="videoDescricao" placeholder="Descrição (opcional)" style="margin-left: 10px; padding: 8px 10px;">
+                <button onclick="adicionarVideo()" style="margin-left: 10px; padding: 8px 15px; background: #333; color: white; border: none; cursor: pointer;">Adicionar</button>
+            </div>
             <div class="featured-grid" id="videosGrid">
-                <div class="empty-state">Em breve...</div>
+                <div class="empty-state">Nenhum vídeo adicionado ainda.</div>
             </div>
         </div>
     </section>
@@ -305,7 +416,7 @@
                 <div class="section-number">/03</div>
                 <div>
                     <h2 class="section-title">Sobre</h2>
-                    <p class="section-desc">Fotografo especializado em fine art photography, trabalhando com foco em composicao, luz e narrativa visual. Com experiencia em comunicacao politica, media training e gestao de crise.</p>
+                    <p class="section-desc">Fotógrafo especializado em fine art photography, trabalhando com foco em composição, luz e narrativa visual. Com experiência em comunicação política, media training e gestão de crise. Criador de conteúdo e consultor em estratégia visual para marcas e personalidades públicas.</p>
                 </div>
             </div>
         </div>
@@ -317,7 +428,7 @@
                 <div class="section-number">/04</div>
                 <div>
                     <h2 class="section-title">Contato</h2>
-                    <p class="section-desc">Entre em contato para projetos, duvidas ou parcerias. Sidney Pereira InsightTech</p>
+                    <p class="section-desc">Entre em contato para projetos, dúvidas ou parcerias.<br><strong>Sidney Pereira InsightTech</strong></p>
                 </div>
             </div>
         </div>
@@ -357,6 +468,63 @@
             });
         }
 
+        function adicionarFoto() {
+            const fileInput = document.getElementById('addFotoInput');
+            const titulo = document.getElementById('fotoTitulo').value || 'Sem título';
+            
+            if (!fileInput.files[0]) {
+                alert('Selecione uma foto');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fotos = JSON.parse(localStorage.getItem("fotos")) || [];
+                fotos.push({
+                    url: e.target.result,
+                    titulo: titulo
+                });
+                localStorage.setItem("fotos", JSON.stringify(fotos));
+                carregarFotos();
+                document.getElementById('fotoTitulo').value = '';
+                fileInput.value = '';
+                alert('Foto adicionada com sucesso!');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
+        function adicionarVideo() {
+            const fileInput = document.getElementById('addVideoInput');
+            const titulo = document.getElementById('videoTitulo').value || 'Sem título';
+            const descricao = document.getElementById('videoDescricao').value || '';
+            
+            if (!fileInput.files[0]) {
+                alert('Selecione um vídeo');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const video = {
+                    id: Date.now(),
+                    url: e.target.result,
+                    titulo: titulo,
+                    descricao: descricao
+                };
+
+                const transaction = db.transaction([storeName], "readwrite");
+                const store = transaction.objectStore(storeName);
+                store.add(video);
+
+                carregarVideos();
+                document.getElementById('videoTitulo').value = '';
+                document.getElementById('videoDescricao').value = '';
+                fileInput.value = '';
+                alert('Vídeo adicionado com sucesso!');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
         function carregarFotos() {
             try {
                 const fotos = JSON.parse(localStorage.getItem("fotos")) || [];
@@ -390,7 +558,7 @@
                     const grid = document.getElementById("videosGrid");
 
                     if (videos.length === 0) {
-                        grid.innerHTML = '<div class="empty-state">Videos em breve...</div>';
+                        grid.innerHTML = '<div class="empty-state">Nenhum vídeo adicionado ainda.</div>';
                         return;
                     }
 
@@ -413,14 +581,14 @@
                                 ${conteudo}
                             </div>
                             <div class="video-info">
-                                <h3>${video.titulo || 'Video'}</h3>
+                                <h3>${video.titulo || 'Vídeo'}</h3>
                                 <p>${video.descricao || ''}</p>
                             </div>
                         </div>`;
                     }).join("");
                 };
             } catch (e) {
-                console.log("Erro ao carregar videos:", e);
+                console.log("Erro ao carregar vídeos:", e);
             }
         }
 
@@ -428,7 +596,7 @@
             try {
                 await initDB();
             } catch (e) {
-                console.log("IndexedDB nao disponivel");
+                console.log("IndexedDB não disponível");
             }
             carregarFotos();
             carregarVideos();
