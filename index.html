@@ -904,8 +904,12 @@
   }
   function getEmbedUrl(url) {
     let m;
-    if ((m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?]+)/))) return 'https://www.youtube.com/embed/' + m[1];
-    if ((m = url.match(/vimeo\.com\/(\d+)/))) return 'https://player.vimeo.com/video/' + m[1];
+    if ((m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/)))
+      return 'https://www.youtube.com/embed/' + m[1] + '?rel=0&modestbranding=1';
+    if ((m = url.match(/youtube\.com\/shorts\/([^&?/]+)/)))
+      return 'https://www.youtube.com/embed/' + m[1] + '?rel=0';
+    if ((m = url.match(/vimeo\.com\/(\d+)/)))
+      return 'https://player.vimeo.com/video/' + m[1];
     return url;
   }
   function saveVideos() { localStorage.setItem('sp_videos', JSON.stringify(videos)); }
